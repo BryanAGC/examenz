@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faciales Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet"> <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <style>
+        body {
+            background-color: #e3f2fd; /* Very light blue background */
+            font-family: 'Roboto', sans-serif; /* Roboto for body */
+            color: #0d47a1; /* Deep blue for text */
+        }
+
+        .container {
+            background-color: #ffffff; /* White container for contrast */
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 50px;
+            border: 1px solid #bbdefb; /* Light blue border */
+        }
+
+        h1, h3 {
+            color: #1565c0; /* Medium blue for headings */
+            text-align: center;
+            font-family: 'Lora', serif; /* Lora for headings */
+        }
+
+        .btn-primary {
+            background-color: #64b5f6; /* Light blue button */
+            border: none;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e88e5; /* Darker blue on hover */
+        }
+
+        .form-control {
+            border: 1px solid #64b5f6; /* Light blue border for form elements */
+            border-radius: 5px;
+            background-color: #e3f2fd; /* Light blue background for input */
+            color: #0d47a1;
+        }
+
+        .form-control:focus {
+            border-color: #1565c0; /* Medium blue border on focus */
+            box-shadow: 0 0 5px rgba(21, 101, 192, 0.5);
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 15px;
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #64b5f6; /* Light blue border */
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #90caf9; /* Soft blue footer */
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exam</h1>
+
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3></h3>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="file" name="file" id="file-input" class="form-control" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-30 d-block mx-auto">Analizar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3></h3>
+                <img id="result-image" class="preview-image" src="#" alt=".">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle new image upload and analysis
+        document.getElementById('upload-form').addEventListener('submit', event => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            axios.post('/analyze', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }).then(response => {
+                if (response.data.success) {
+                    const resultImage = document.getElementById('result-image');
+                    resultImage.src = `data:image/png;base64,${response.data.image}`;
+                }
+            }).catch(error => {
+                console.error('Error uploading image:', error);
+            });
+        });
+    </script>
+</body>
+</html>
